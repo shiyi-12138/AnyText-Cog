@@ -8,7 +8,7 @@ import re
 import tempfile
 import cv2
 import numpy as np
-from cog import BasePredictor, Input, Path as CogPath
+from cog import BasePredictor, Input, Path
 from modelscope.pipelines import pipeline
 
 class Predictor(BasePredictor):
@@ -122,7 +122,7 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        image: CogPath = Input(
+        image: Path = Input(
             description="Input image. For text-generation: reference for positioning. For text-editing: the image to edit."
         ),
         prompt: str = Input(
@@ -138,7 +138,7 @@ class Predictor(BasePredictor):
         image_count: int = Input(default=2, description="Number of output images to generate"),
         cfg_scale: float = Input(default=9.0, description="Classifier-free guidance scale"),
         strength: float = Input(default=1.0, description="Control strength"),
-    ) -> list[CogPath]:
+    ) -> list[Path]:
         img = cv2.imread(str(image))
         if img is None:
             raise ValueError(f"Could not read image from {image}")
@@ -188,7 +188,7 @@ class Predictor(BasePredictor):
             img_rgb = img_result[..., ::-1]
             out_path = os.path.join(output_dir, f"output_{idx}.png")
             cv2.imwrite(out_path, img_rgb)
-            output_paths.append(CogPath(out_path))
+            output_paths.append(Path(out_path))
         return output_paths
 
 
